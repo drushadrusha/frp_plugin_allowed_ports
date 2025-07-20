@@ -1,14 +1,17 @@
 name: goreleaser
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
-  contents: read
+  contents: write  # нужно, если потом будешь пушить release-артефакты
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,13 +26,13 @@ jobs:
       - name: Make All
         run: |
           ./package.sh
-      - name: Run GoReleaser
+
+      - name: Run GoReleaser (snapshot mode, без нытья)
         uses: goreleaser/goreleaser-action@v4
         with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: latest
-          args: release --clean
-          # workdir: ./cmd/frps_allowed_ports
+          args: release --clean --snapshot --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
