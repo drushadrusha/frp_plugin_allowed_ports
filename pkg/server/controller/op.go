@@ -24,6 +24,11 @@ func NewOpController(ports map[string][]string) *OpController {
 func (c *OpController) Register(engine *gin.Engine) {
 	engine.POST("/handler", MakeGinHandlerFunc(c.HandleLogin))
 }
+
+func (c *OpController) UpdatePorts(newPorts map[string][]string) {
+	c.ports = newPorts
+}
+
 func contains(s []string, str string) bool {
 	for _, v := range s {
 		if v == str {

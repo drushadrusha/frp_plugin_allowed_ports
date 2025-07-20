@@ -22,12 +22,14 @@ type Server struct {
 
 	s    *http.Server
 	done chan struct{}
+	controller *controller.OpController
 }
 
 func New(cfg Config) (*Server, error) {
 	s := &Server{
 		cfg:  cfg,
 		done: make(chan struct{}),
+		controller: controller.NewOpController(cfg.Ports),
 	}
 	if err := s.init(); err != nil {
 		return nil, err
@@ -76,6 +78,10 @@ func (s *Server) initHTTPServer() error {
 	s.s = &http.Server{
 		Handler: engine,
 	}
-	controller.NewOpController(s.cfg.Ports).Register(engine)
+	s.controller.Register(engine)
 	return nil
+}
+
+func (s *Server) Reload(newPorts map[string][]string) {
+	s.controller.UpdatePorts(newPorts)
 }
