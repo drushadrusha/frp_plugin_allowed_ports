@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write  # нужно, если потом будешь пушить release-артефакты
+  contents: write
 
 jobs:
   goreleaser:
@@ -27,12 +27,12 @@ jobs:
         run: |
           ./package.sh
 
-      - name: Run GoReleaser (snapshot mode, без нытья)
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --snapshot --skip-validate
+          args: release --clean --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
